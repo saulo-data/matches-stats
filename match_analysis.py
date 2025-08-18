@@ -1,11 +1,6 @@
 #libraries
 import streamlit as st
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 import pandas as pd
-import mplsoccer.pitch as Pitch
-import mplsoccer as mpl
 from pymongo import MongoClient
 import plotly.express as px
 
