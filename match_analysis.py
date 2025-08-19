@@ -188,4 +188,4 @@ with st.form('my-form'):
                 
             
         except Exception as e:
-            st.text(e)
+            st.text("Ops! Something Went Wrong!")
