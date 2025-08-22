@@ -13,8 +13,8 @@ col = db.fotmob_stats
 #list of the teams
 cups = ['INT', 'INT-2']
 leagues = col.find({'general.country': {"$nin": cups}}).distinct('general.league')
-home_teams = col.distinct('teams.home.name')
-away_teams = col.distinct('teams.away.name')
+home_teams = col.find({'general.country': {"$nin": cups}})distinct('teams.home.name')
+away_teams = col.find({'general.country': {"$nin": cups}})distinct('teams.away.name')
 color_home = '#27e265'
 color_away = '#d49115'
 
