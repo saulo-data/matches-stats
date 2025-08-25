@@ -104,7 +104,7 @@ with st.form('my-form'):
                 home_shots['team'] = match['teams']['home']['name']
                 away_shots = pd.DataFrame.from_dict(shots['away'])
                 away_shots['team'] = match['teams']['away']['name']
-                df_shots = pd.concat([home_shots, away_shots])
+                df_shots = pd.concat([home_shots, away_shots]).fillna(0)
                 df_shots['size'] = [s + 0.05 for s in df_shots['xgot']]
                 df_shots['efficiency_rate'] = (df_shots['xg'] + df_shots['xgot']) / 2
 
