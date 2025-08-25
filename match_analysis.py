@@ -67,7 +67,7 @@ with st.form('my-form'):
         home = st.selectbox(label="Select a Home Team", options=home_teams, index=0)
     
     with col2:
-        away = st.selectbox(label="Select an Away Team", options=away_teams, index=1)
+        away = st.selectbox(label="Select an Away Team", options=away_teams, index=2)
 
     submitted = st.form_submit_button("Submit")
 
