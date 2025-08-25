@@ -43,7 +43,6 @@ with st.sidebar:
 
     st.subheader("My links (pt-br)")
     st.link_button("Aposta Consciente", "https://go.hotmart.com/Q98778179P?dp=1", use_container_width=True)
-    #st.link_button("Udemy", "https://www.udemy.com/user/saulo-faria-3/", use_container_width=True)
     st.link_button("Instagram", "https://www.instagram.com/saulo.foot/", use_container_width=True)
     st.link_button("X", "https://x.com/fariasaulo_", use_container_width=True)
     st.link_button("Youtube", "https://www.youtube.com/channel/UCkSw2eyetrr8TByFis0Uyug", use_container_width=True)
@@ -56,10 +55,10 @@ st.header('Plot the Stats of a Selected Match - Only National Leagues')
 #form to select the teams
 with st.form('my-form'):
     if 'home' not in st.session_state:
-        st.session_state['home'] = 'Flamengo'
+        st.session_state['home'] = home_teams[0]
     
     if 'away' not in st.session_state:
-        st.session_state['away'] = 'Internacional'
+        st.session_state['away'] = away_teams[2]
 
     col1, col2 = st.columns(2)
 
@@ -108,11 +107,6 @@ with st.form('my-form'):
                 df_shots = pd.concat([home_shots, away_shots])
                 df_shots['size'] = [s + 0.05 for s in df_shots['xgot']]
                 df_shots['efficiency_rate'] = (df_shots['xg'] + df_shots['xgot']) / 2
-
-                # df_shots['efficiency'] = df_shots['efficiency_rate'].apply(categorize_shot)
-                # df_shots_grouped = df_shots[['team', 'efficiency']].groupby(by=['team', 'efficiency']).sum()
-
-                # st.text(df_shots)
 
                 st.subheader(match_details)
     
