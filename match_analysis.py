@@ -1,7 +1,7 @@
 #libraries
 import streamlit as st
 import pandas as pd
-from pymongo import MongoClient
+from pymongo import MongoClient, collection
 import plotly.express as px
 
 #connection
@@ -13,8 +13,8 @@ col = db.fotmob_stats
 #list of the teams
 cups = ['INT', 'INT-2']
 leagues = col.find({'general.country': {"$nin": cups}}).distinct('general.league')
-home_teams = col.find({'general.country': {"$nin": cups}}).distinct('teams.home.name')
-away_teams = col.find({'general.country': {"$nin": cups}}).distinct('teams.away.name')
+home_teams = col.distinct('teams.home.name')
+away_teams = col.distinct('teams.away.name')
 color_home = '#27e265'
 color_away = '#d49115'
 
@@ -24,6 +24,24 @@ def get_match(home: str, away: str) -> dict:
     match = col.find_one({'teams.home.name': home, 'teams.away.name': away})
 
     return match
+
+#function to get complete names for teams
+def get_teams_dict(venue: str, collection: collection, exclude: list) -> dict:
+    teams_data = {}
+    teams = list(collection.find({'general.country': {"$nin": exclude}}, {"general.country": 1, "general.league": 1, f"teams.{venue}.name": 1}))
+    
+
+    for team in teams:
+        team_name = team['teams'][venue]['name']
+        team_league = team['general']['league']
+        team_country = team['general']['country']
+        complete_name = f"{team_name} - {team_country}"
+        if complete_name not in teams_data.keys():
+            teams_data[complete_name] = {'country': team_country, 'league': team_league, 'name': team_name}
+        else:
+            continue
+    
+    return teams_data
 
 def categorize_shot(shot):
         if shot >= 0.7:
@@ -50,30 +68,33 @@ with st.sidebar:
 
 #page title
 st.header('Plot the Stats of a Selected Match - Only National Leagues')
-
+home_teams = get_teams_dict(venue='home', collection=col, exclude=cups)
+away_teams = get_teams_dict(venue='away', collection=col, exclude=cups)
+home_names = list(home_teams.keys())
+away_names = list(away_teams.keys())
 
 #form to select the teams
 with st.form('my-form'):
     if 'home' not in st.session_state:
-        st.session_state['home'] = home_teams[0]
+        st.session_state['home'] = home_teams[home_names[0]]['name']
     
     if 'away' not in st.session_state:
-        st.session_state['away'] = away_teams[2]
+        st.session_state['away'] = away_teams[away_names[0]]['name']
 
     col1, col2 = st.columns(2)
 
     with col1:
-        home = st.selectbox(label="Select a Home Team", options=home_teams, index=0)
+        home = st.selectbox(label="Select a Home Team", options=home_names, index=0)
     
     with col2:
-        away = st.selectbox(label="Select an Away Team", options=away_teams, index=2)
+        away = st.selectbox(label="Select an Away Team", options=away_names, index=1)
 
     submitted = st.form_submit_button("Submit")
 
     if submitted:
         try:
-            st.session_state['home'] = home
-            st.session_state['away'] = away
+            st.session_state['home'] = home_teams[home]['name']
+            st.session_state['away'] = away_teams[away]['name']
 
             match = get_match(st.session_state['home'], st.session_state['away'])
             if not match:
@@ -175,11 +196,7 @@ with st.form('my-form'):
                 with col6:
                     st.plotly_chart(fig_polar)
                 with col7:
-                    st.plotly_chart(fig_box)
-
-            
-
-                
+                    st.plotly_chart(fig_box)            
             
         except Exception as e:
-            st.text("Ops! Something Went Wrong!")
+            st.text(e)
