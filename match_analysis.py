@@ -60,6 +60,7 @@ with st.sidebar:
     st.write("This Web App was designed in order to get smart plots of a plethora of matches (current season). If you want to have more details about these matches, other stats, other seasons or believe I can help you in your project, send an email to saulo.foot@gmail.com. I'm always open to work.")
 
     st.subheader("My links (pt-br)")
+    st.link_button("Substack", "https://substack.com/@saulofaria", use_container_width=True)
     st.link_button("Instagram", "https://www.instagram.com/saulo.foot/", use_container_width=True)
     st.link_button("X", "https://x.com/fariasaulo_", use_container_width=True)
     st.link_button("Youtube", "https://www.youtube.com/channel/UCkSw2eyetrr8TByFis0Uyug", use_container_width=True)
