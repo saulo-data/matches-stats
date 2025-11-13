@@ -57,7 +57,7 @@ st.set_page_config(page_title='Match Plots', layout='wide')
 with st.sidebar:
     st.image('static/image.png', 
              caption="Saulo Faria - Data Scientist Specialized in Football")
-    st.write("This Web App was designed in order to get smart plots of a plethora of matches (current season). If you want to have more details about these matches, other stats, other seasons or believe I can help you in your project, send an email to saulo.foot@gmail.com. I'm always open to work.")
+    st.write("This Web App was designed in order to get smart plots of a plethora of matches (current season). If you want to have more details about these matches, other stats, other seasons or believe I can help you in your project, send an email to football.data@saulofaria.com.br. I'm always open to work.")
 
     st.subheader("My links (pt-br)")
     st.link_button("Substack", "https://substack.com/@saulofaria", use_container_width=True)
