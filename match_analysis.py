@@ -12,7 +12,9 @@ col = db.fotmob_stats
 
 #list of the teams
 cups = ['INT', 'INT-2']
-leagues = col.find({'general.country': {"$nin": cups}}).distinct('general.league')
+YEAR = 2025
+SEASONS = [f"{YEAR}", f"{YEAR}/{YEAR+1}"]
+leagues = col.find({'general.country': {"$nin": cups}, 'general.season': {'$in': SEASONS}).distinct('general.league')
 home_teams = col.distinct('teams.home.name')
 away_teams = col.distinct('teams.away.name')
 color_home = '#27e265'
@@ -20,15 +22,15 @@ color_away = '#d49115'
 
 #function to get the data of the selected match
 @st.cache_data(show_spinner=False)
-def get_match(home: str, away: str) -> dict:
-    match = col.find_one({'teams.home.name': home, 'teams.away.name': away})
+def get_match(home: str, away: str, seasons: list) -> dict:
+    match = col.find_one({'teams.home.name': home, 'teams.away.name': away, 'general.season': {'$in': seasons}})
 
     return match
 
 #function to get complete names for teams
-def get_teams_dict(venue: str, collection: collection, exclude: list) -> dict:
+def get_teams_dict(venue: str, collection: collection, exclude: list, seasons: list) -> dict:
     teams_data = {}
-    teams = list(collection.find({'general.country': {"$nin": exclude}}, {"general.country": 1, "general.league": 1, f"teams.{venue}.name": 1}))
+    teams = list(collection.find({'general.country': {"$nin": exclude}, 'general.season': {'$in': seasons}}, {"general.country": 1, "general.league": 1, f"teams.{venue}.name": 1}))
     
 
     for team in teams:
@@ -68,8 +70,8 @@ with st.sidebar:
 
 #page title
 st.header('Plot the Stats of a Selected Match - Only National Leagues')
-home_teams = get_teams_dict(venue='home', collection=col, exclude=cups)
-away_teams = get_teams_dict(venue='away', collection=col, exclude=cups)
+home_teams = get_teams_dict(venue='home', collection=col, exclude=cups, seasons: SEASONS)
+away_teams = get_teams_dict(venue='away', collection=col, exclude=cups, seasons: SEASONS)
 home_names = list(home_teams.keys())
 away_names = list(away_teams.keys())
 
@@ -96,7 +98,7 @@ with st.form('my-form'):
             st.session_state['home'] = home_teams[home]['name']
             st.session_state['away'] = away_teams[away]['name']
 
-            match = get_match(st.session_state['home'], st.session_state['away'])
+            match = get_match(st.session_state['home'], st.session_state['away'], SEASONS)
             if not match:
                 st.text("Maybe This Match Hasn't Ocurred Yet or the Teams Don't Belong to the Same National League")
             else:
