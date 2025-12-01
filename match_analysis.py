@@ -70,8 +70,8 @@ with st.sidebar:
 
 #page title
 st.header('Plot the Stats of a Selected Match - Only National Leagues')
-home_teams = get_teams_dict(venue='home', collection=col, exclude=cups, seasons: SEASONS)
-away_teams = get_teams_dict(venue='away', collection=col, exclude=cups, seasons: SEASONS)
+home_teams = get_teams_dict(venue='home', collection=col, exclude=cups, seasons=SEASONS)
+away_teams = get_teams_dict(venue='away', collection=col, exclude=cups, seasons=SEASONS)
 home_names = list(home_teams.keys())
 away_names = list(away_teams.keys())
 
